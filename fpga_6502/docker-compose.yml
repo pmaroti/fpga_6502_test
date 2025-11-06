@@ -3,7 +3,7 @@ services:
   gowin_toolchain:
     image: gowin-devkit
     volumes:
-      - ./fpga_6502:/app/verilog:rw
+      - ./:/app/verilog:rw
     working_dir: /app/verilog
 #    command: make
     command: sleep 5000000

@@ -18,6 +18,7 @@
  */
 
 module mALU( clk, op, right, AI, BI, CI, CO, BCD, OUT, V, Z, N, HC, RDY );
+
 	input clk;
 	input right;
 	input [3:0] op;		// operation

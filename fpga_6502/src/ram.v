@@ -7,30 +7,30 @@
 //Device Version: C
 //Created Time: Mon Sep  8 20:11:19 2025
 
-module rom (dout, clk, oce, ce, ad);
+module ram (dout, clk, oce, ce, ad, we, din, data_out);
 
 output wire [7:0] dout;
 input wire clk;
 input wire oce;
 input wire ce;
 input wire [10:0] ad;
+input wire we = 0;
+input wire [7:0] din;
 
  (* RAM_STYLE = "block" *)
  reg[7:0] mem[0:2047];
- reg[7:0] data_out;
+ output reg[7:0] data_out;
 
     always @(posedge clk) begin
         if (ce == 1'b1) begin
+            if (we == 1'b1) begin
+                mem[ad] <= din;
+                data_out <= din;
+            end
             data_out <= mem[ad];
         end
     end
 
     assign dout = (oce == 1'b1) ?  data_out : 8'b0000_0000 ;
-
-    initial begin
-		data_out = 8'h0;
-		$readmemh("rom.hex", mem);
-    end
-
 
 endmodule //Gowin_pROM

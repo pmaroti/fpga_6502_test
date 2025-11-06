@@ -4,7 +4,7 @@ PROGRAM=fpga_6502
 default:
 	yosys -q \
 	  -p "synth_gowin -top $(PROGRAM) -json $(PROGRAM).json -family gw1n" \
-	  src/$(PROGRAM).v src/cpu.v src/mALU.v src/rom.v
+	  src/$(PROGRAM).v src/ALU.v src/cpu_65c02.v src/rom.v src/ram.v src/uart_tx.v src/uart_rx.v
 	nextpnr-himbaechel -r \
 	  --json $(PROGRAM).json \
 	  --write $(PROGRAM)_pnr.json \

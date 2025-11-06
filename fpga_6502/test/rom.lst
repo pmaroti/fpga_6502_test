@@ -1,0 +1,116 @@
+.6502
+
+.org 0xF800
+start:
+  cld
+
+0xf800: d8               cld                                 cycles: 2
+
+  lda #0x00
+
+0xf801: a9 00            lda #0x00                           cycles: 2
+
+  sta $10
+
+0xf803: 85 10            sta 0x10                            cycles: 3
+
+loop:
+  lda $A001 ; read UART status register
+
+0xf805: ad 01 a0         lda 0xa001                          cycles: 4
+
+  and #0x02  ; check if TX ready
+
+0xf808: 29 02            and #0x02                           cycles: 2
+
+;  beq loop    ; if not ready, wait
+  bne loop    ; if not ready, wait
+
+0xf80a: d0 f9            bne 0xf805 (offset=-7)              cycles: 2-3
+
+  lda $10
+
+0xf80c: a5 10            lda 0x10                            cycles: 3
+
+  sta $A000 ; send to UART TX data register
+
+0xf80e: 8d 00 a0         sta 0xa000                          cycles: 4
+
+  sta $C000
+
+0xf811: 8d 00 c0         sta 0xc000                          cycles: 4
+
+  inc $10
+
+0xf814: e6 10            inc 0x10                            cycles: 5
+
+
+  lda #0x20
+
+0xf816: a9 20            lda #0x20                           cycles: 2
+
+  ldy #0x00
+
+0xf818: a0 00            ldy #0x00                           cycles: 2
+
+  ldx #0x00
+
+0xf81a: a2 00            ldx #0x00                           cycles: 2
+
+delay:
+  dex
+
+0xf81c: ca               dex                                 cycles: 2
+
+  bne delay
+
+0xf81d: d0 fd            bne 0xf81c (offset=-3)              cycles: 2-3
+
+  dey
+
+0xf81f: 88               dey                                 cycles: 2
+
+  bne delay
+
+0xf820: d0 fa            bne 0xf81c (offset=-6)              cycles: 2-3
+
+  dec
+
+0xf822: 3a               dec                                 cycles: 0
+
+  bne delay
+
+0xf823: d0 f7            bne 0xf81c (offset=-9)              cycles: 2-3
+
+  nop
+
+0xf825: ea               nop                                 cycles: 2
+
+  jmp loop
+
+0xf826: 4c 05 f8         jmp 0xf805                          cycles: 3
+
+  
+  .org $fffc
+  dw start
+  dw $0000  
+data sections:
+fffc: 00 f8 00 00                                      ....
+
+
+Program Info:
+                         LABEL ADDRESS  SCOPE
+                         start 0000f800 0
+                          loop 0000f805 0
+                         delay 0000f81c 0
+ -> Total symbols: 3
+
+Include Paths: .
+               /usr/local/share/naken_asm/include
+               include
+ Instructions: 21
+   Code Bytes: 41
+   Data Bytes: 4
+  Low Address: 0xf800 (63488)
+ High Address: 0xffff (65535)
+
